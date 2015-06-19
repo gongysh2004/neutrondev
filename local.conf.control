@@ -1,0 +1,84 @@
+[[local|localrc]]
+NEUTRON_CREATE_INITIAL_NETWORKS=False
+LIBS_FROM_GIT=False
+NOVA_ENABLED_APIS=osapi_compute,metadata
+ENABLED_SERVICES=key,g-reg,g-api,n-api,n-cond,n-crt,n-sch,n-cauth,n-cpu,n-novnc,horizon,neutron,q-agt,q-svc,q-dhcp,q-l3,q-meta,rabbit,mysql
+ENABLED_SERVICES=key,g-reg,g-api,n-api,n-cond,n-sch,n-cauth,n-cpu,n-novnc,horizon,neutron,q-agt,q-svc,q-dhcp,q-l3,q-meta,rabbit,mysql
+#ENABLED_SERVICES=key,neutron,q-svc,rabbit,mysql
+#GIT_BASE=https://github.com
+RECLONE=yes
+#NOVA_VNC_ENABLED=False
+ENABLE_DEBUG_LOG_LEVEL=False
+KEYSTONE_TOKEN_FORMAT=UUID
+LOG_COLOR=False
+HOST_IP=172.17.42.1
+VNCSERVER_LISTEN=0.0.0.0
+VNCSERVER_PROXYCLIENT_ADDRESS=$HOST_IP
+NOVNCPROXY_URL=http://172.17.42.1:6080/vnc_auto.html
+Q_L3_ENABLED=True
+ENABLE_HTTPD_MOD_WSGI_SERVICES=False
+Q_USE_ROOTWRAP=False
+#enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
+#enable_service ceilometer-alarm-notify ceilometer-alarm-eval
+
+Q_PLUGIN=ml2
+Q_AGENT=openvswitch
+DATABASE_PASSWORD=root
+RABBIT_PASSWORD=password
+SERVICE_TOKEN=token
+
+Q_DVR_MODE=dvr_snat
+
+
+SERVICE_PASSWORD=password
+ADMIN_PASSWORD=admin
+SCREEN_LOGDIR=$DEST/logs/screen
+
+PUBLIC_NETWORK_NAME=office_net
+FLOATING_RANGE=10.96.24.0/24
+PUBLIC_NETWORK_GATEWAY=10.96.24.1
+Q_FLOATING_ALLOCATION_POOL=start=10.96.24.10,end=10.96.24.40
+
+[[post-config|/etc/neutron/neutron.conf]]
+[DEFAULT]
+l3_ha = False 
+uos_subnet_nameservers = 1.2.4.8,114.114.114.114 
+router_scheduler_driver = neutron.scheduler.l3_agent_scheduler.LeastRoutersScheduler
+router_distributed = False
+router_auto_schedule = False
+[[post-config|/etc/neutron/plugins/ml2/ml2_conf.ini]]
+[ml2]
+type_drivers = local,vxlan,gre,vlan
+mechanism_drivers = openvswitch,l2population 
+tenant_network_types = vxlan
+[ml2_type_flat]
+[ml2_type_vlan]
+network_vlan_ranges = net1:1000:1010
+[ml2_type_gre]
+tunnel_id_ranges =200:300
+[ml2_type_vxlan]
+vni_ranges = 100:300
+[ovs]
+local_ip = 172.17.42.1
+#bridge_mappings = net1:br-eth1
+[agent]
+l2_population = True 
+arp_responder = True 
+tunnel_types = vxlan,gre
+enable_distributed_routing = True
+[linux_bridge]
+#physical_interface_mappings = ext_net1:enp0s29u1u5,vlan_net1:vmnet1
+[vxlan]
+local_ip = 172.17.42.1
+[[post-config|/etc/neutron/l3_agent.ini]]
+[DEFAULT]
+router_delete_namespaces = True
+#root_helper = sudo
+# l3_ha_conntrackd=True
+[[post-config|/etc/neutron/vpn_agent.ini]]
+[vpnagent]
+#vpn device drivers which vpn agent will use
+#If we want to use multiple drivers,  we need to define this option multiple times.
+#vpn_device_driver=neutron.services.vpn.device_drivers.ipsec.OpenSwanDriver
+#vpn_device_driver=neutron.services.vpn.device_drivers.pptp.PptpdDriver
+

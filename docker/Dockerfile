@@ -3,7 +3,7 @@ MAINTAINER Yong Sheng Gong  "gong.yongsheng@99cloud.net"
 COPY sources.list /etc/apt/sources.list
 
 RUN apt-get update && \
-    apt-get install -y vim git openssh-server net-tools wget sudo && \
+    apt-get install -y vim git openssh-server net-tools wget sudo iputils-ping lsb-release python && \
     apt-get clean
 
 RUN useradd stack -d /home/stack -m -p $(openssl passwd -1 dev123) -s /bin/bash

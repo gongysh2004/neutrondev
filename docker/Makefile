@@ -1,4 +1,4 @@
-TAG = 15.04.1
+TAG = 15.04.5
 
 build:
 	docker build -t dockerreg.99cloud.net/ubuntussh:$(TAG) .
