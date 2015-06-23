@@ -1,12 +1,12 @@
 [[local|localrc]]
-NEUTRON_CREATE_INITIAL_NETWORKS=False
+#NEUTRON_CREATE_INITIAL_NETWORKS=False
 LIBS_FROM_GIT=False
 NOVA_ENABLED_APIS=osapi_compute,metadata
 ENABLED_SERVICES=key,g-reg,g-api,n-api,n-cond,n-crt,n-sch,n-cauth,n-cpu,n-novnc,horizon,neutron,q-agt,q-svc,q-dhcp,q-l3,q-meta,rabbit,mysql
-ENABLED_SERVICES=key,g-reg,g-api,n-api,n-cond,n-sch,n-cauth,n-cpu,n-novnc,horizon,neutron,q-agt,q-svc,q-dhcp,q-l3,q-meta,rabbit,mysql
+#ENABLED_SERVICES=key,g-reg,g-api,n-api,n-cond,n-sch,n-cauth,n-cpu,n-novnc,horizon,neutron,q-agt,q-svc,q-dhcp,q-l3,q-meta,rabbit,mysql
 #ENABLED_SERVICES=key,neutron,q-svc,rabbit,mysql
 #GIT_BASE=https://github.com
-RECLONE=yes
+#RECLONE=yes
 #NOVA_VNC_ENABLED=False
 ENABLE_DEBUG_LOG_LEVEL=False
 KEYSTONE_TOKEN_FORMAT=UUID
@@ -34,10 +34,24 @@ SERVICE_PASSWORD=password
 ADMIN_PASSWORD=admin
 SCREEN_LOGDIR=$DEST/logs/screen
 
-PUBLIC_NETWORK_NAME=office_net
-FLOATING_RANGE=10.96.24.0/24
-PUBLIC_NETWORK_GATEWAY=10.96.24.1
-Q_FLOATING_ALLOCATION_POOL=start=10.96.24.10,end=10.96.24.40
+IP_VERSION=4
+PUBLIC_PHYSICAL_NETWORK=public
+
+Q_USE_SECGROUP=True
+FLOATING_RANGE="192.168.0.0/24"
+FIXED_RANGE="10.0.0.0/24"
+Q_FLOATING_ALLOCATION_POOL=start=192.168.0.250,end=192.168.0.254
+PUBLIC_NETWORK_GATEWAY="192.168.0.1"
+Q_L3_ENABLED=True
+PUBLIC_INTERFACE=enp0s20u2
+Q_USE_PROVIDERNET_FOR_PUBLIC=True
+OVS_PHYSICAL_BRIDGE=br-ex
+PUBLIC_BRIDGE=br-ex
+OVS_BRIDGE_MAPPINGS=public:br-ex
+#PUBLIC_NETWORK_NAME=office_net
+#FLOATING_RANGE=10.96.24.0/24
+#PUBLIC_NETWORK_GATEWAY=10.96.24.1
+#Q_FLOATING_ALLOCATION_POOL=start=10.96.24.10,end=10.96.24.40
 
 [[post-config|/etc/neutron/neutron.conf]]
 [DEFAULT]
@@ -48,7 +62,7 @@ router_distributed = False
 router_auto_schedule = False
 [[post-config|/etc/neutron/plugins/ml2/ml2_conf.ini]]
 [ml2]
-type_drivers = local,vxlan,gre,vlan
+type_drivers = local,flat,vxlan,gre,vlan
 mechanism_drivers = openvswitch,l2population 
 tenant_network_types = vxlan
 [ml2_type_flat]
