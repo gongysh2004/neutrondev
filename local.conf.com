@@ -2,7 +2,7 @@
 LIBS_FROM_GIT=False
 ENABLE_DEBUG_LOG_LEVEL=False
 KEYSTONE_TOKEN_FORMAT=UUID
-HOST_IP=172.17.42.2
+HOST_IP=172.17.42.3
 LOGFILE=/opt/stack/logs2/stack.sh.log
 DATABASE_TYPE=mysql
 SERVICE_HOST=172.17.42.1
@@ -27,7 +27,7 @@ Q_DVR_MODE=dvr_snat
 SERVICE_PASSWORD=password
 ADMIN_PASSWORD=admin
 SCREEN_LOGDIR=$DEST/logs2/screen
-
+DATA_DIR=${DEST}/data2
 [[post-config|/etc/neutron/neutron.conf]]
 [DEFAULT]
 router_auto_schedule = False
@@ -38,18 +38,18 @@ router_auto_schedule = False
 [ml2_type_vlan]
 [ml2_type_vxlan]
 [ovs]
-local_ip = 172.17.42.2
+local_ip = 172.17.42.3
 #bridge_mappings = net1:br-eth1
 [agent]
-l2_population = True 
-arp_responder = True 
+#l2_population = True 
+#arp_responder = True 
 tunnel_types = vxlan,gre
-enable_distributed_routing = True
+#enable_distributed_routing = True
 
 [linux_bridge]
 [vxlan]
 enable_vxlan = True
-local_ip = 172.17.42.2
+local_ip = 172.17.42.3
 [[post-config|/etc/neutron/l3_agent.ini]]
 [DEFAULT]
 router_delete_namespaces = True
